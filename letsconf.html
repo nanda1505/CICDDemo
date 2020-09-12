@@ -49,8 +49,8 @@
       </div>
     </div>
 
-    <script src="https://meet.letsconf.in/external_api.js"></script>
-    <script src="https://meet.letsconf.in/libs/lib-jitsi-meet.min.js"></script>
+    <script src="https://letsconf.in/external_api.js"></script>
+    <script src="https://letsconf.in/libs/lib-jitsi-meet.min.js"></script>
     <!-- script src="/js/lib/strophe/strophe.js"></script -->
     <!-- script src="/js/lib/strophe/strophe.disco.min.js?v=1"></script -->
     <!-- script src="example.js"></script -->
@@ -66,7 +66,6 @@
       password = urlParams.get("meetingpwd");
 
       // var room = window.location.pathname.split("/")[2];
-
 
       const domain = "meet.letsconf.in";
       const letsconfoptions = {
@@ -89,9 +88,9 @@
 
       this.api.addEventListener("participantJoined", function(event) {
         // when Participant has joined the video conference
-       // alert(
-       //   "Joined Conference: " + event.id + ", Name: " + event.displayName
-       // );
+        // alert(
+        //   "Joined Conference: " + event.id + ", Name: " + event.displayName
+        // );
 
         var listbox = document.getElementById("members");
         var optn = document.createElement("OPTION");
@@ -101,9 +100,8 @@
       });
 
       this.api.getCurrentDevices().then(devices => {
-	console.log(devices);
-	});
-
+        console.log(devices);
+      });
 
       this.api.addEventListener("videoConferenceJoined", () => {
         console.log("Local User Joined");
@@ -118,9 +116,9 @@
         listbox.options.add(optn);
 
         if (this.password != null) {
-           setTimeout(function() {
-              this.api.executeCommand("password", this.password);
-             }, 300);
+          setTimeout(function() {
+            this.api.executeCommand("password", this.password);
+          }, 300);
         }
       });
 
@@ -134,5 +132,3 @@
     </script>
   </body>
 </html>
-
-
