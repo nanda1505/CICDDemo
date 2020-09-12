@@ -1,0 +1,138 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial;
+        color: #111;
+      }
+
+      .split {
+        height: 100%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        overflow-x: hidden;
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      .left {
+        left: 0;
+        background-color: white;
+      }
+
+      .right {
+        right: 0;
+        background-color: white;
+      }
+
+      .centered img {
+        width: 150px;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="split left" style="width: 80%;">
+      <div id="letsconf-container"></div>
+    </div>
+    <div class="split right" style="width: 20%;">
+      <div id="letsconf-members">
+        Present Members
+        <select
+          id="members"
+          size="10"
+          style="width:100%; height:75% border:none;"
+        >
+        </select>
+      </div>
+    </div>
+
+    <script src="https://meet.letsconf.in/external_api.js"></script>
+    <script src="https://meet.letsconf.in/libs/lib-jitsi-meet.min.js"></script>
+    <!-- script src="/js/lib/strophe/strophe.js"></script -->
+    <!-- script src="/js/lib/strophe/strophe.disco.min.js?v=1"></script -->
+    <!-- script src="example.js"></script -->
+    <script>
+      var urlParams = new URLSearchParams(window.location.search);
+
+      // alert("Query String:" + urlParams);
+
+      var password = null;
+
+      var displayName = urlParams.get("user");
+      var roomName = urlParams.get("meeting");
+      password = urlParams.get("meetingpwd");
+
+      // var room = window.location.pathname.split("/")[2];
+
+
+      const domain = "meet.letsconf.in";
+      const letsconfoptions = {
+        audioInput: "<deviceLabel>",
+        audioOutput: "<deviceLabel>",
+        videoInput: "<deviceLabel>",
+        roomName: this.roomName,
+        height: 500,
+        parentNode: document.getElementById("letsconf-container"),
+        interfaceConfigOverwrite: {
+          filmStripOnly: false,
+          SHOW_JITSI_WATERMARK: false
+        },
+        configOverwrite: {
+          disableSimulcast: false
+        }
+      };
+
+      this.api = new JitsiMeetExternalAPI(domain, letsconfoptions);
+
+      this.api.addEventListener("participantJoined", function(event) {
+        // when Participant has joined the video conference
+       // alert(
+       //   "Joined Conference: " + event.id + ", Name: " + event.displayName
+       // );
+
+        var listbox = document.getElementById("members");
+        var optn = document.createElement("OPTION");
+        optn.text = event.displayName;
+        optn.value = event.id;
+        listbox.options.add(optn);
+      });
+
+      this.api.getCurrentDevices().then(devices => {
+	console.log(devices);
+	});
+
+
+      this.api.addEventListener("videoConferenceJoined", () => {
+        console.log("Local User Joined");
+
+        this.api.executeCommand("displayName", this.displayName);
+
+        // add the new joinee to the listbox
+        var listbox = document.getElementById("members");
+        var optn = document.createElement("OPTION");
+        optn.text = this.displayName;
+        optn.value = this.displayName;
+        listbox.options.add(optn);
+
+        if (this.password != null) {
+           setTimeout(function() {
+              this.api.executeCommand("password", this.password);
+             }, 300);
+        }
+      });
+
+      this.api.on("readyToClose", () => {
+        //tricky to close windows
+        window.location.href = "/index.html";
+      });
+      // } catch (error) {
+      //   console.error("Failed to load letsconf API", error);
+      // }
+    </script>
+  </body>
+</html>
+
+
